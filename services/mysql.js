@@ -1,11 +1,6 @@
 const mysql = require('mysql');
-const connection = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '12345678',
-    database: 'udemy',
-    port: 3306,
-});
+const config = require('../config');
+const connection = mysql.createConnection(config.MYSQL_URL);
 
 connection.connect();
 
