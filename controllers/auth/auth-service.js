@@ -31,7 +31,7 @@ const signupVerify = async (req, res, next) => {
     }
 
     const hashedPasssword = await bcrypt.hash(valueInRedis.password, 10)
-    const _id = uuidv4();
+    const _id = uuidv4().replace(/-/g, "").substring(0, 24);
 
     await connection.query("INSERT INTO users(_id,username,email,password) VALUES (?,?,?,?)",
         [_id, email, email, hashedPasssword]);
@@ -54,7 +54,15 @@ const login = async (req, res, next) => {
     }
     delete user.password;// xoa pass truoc khi tra ve user cho client
 
+
     const access_token = jwt.sign({ _id: user._id }, config.JWT_SECRET, { expiresIn: 30 * 24 * 60 * 60 });
+   
+    user.learningcourses = [];// link data sau
+    user.wishlist = [];
+    user.notis = [];
+    user.verified = true;
+    // user.creditbalance = 0;
+    user.mycourses = [];
     res.send({ code: 200, message: 'login sucsessful', user, access_token });
     return;
 }
