@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');// sinh id ngau nhien
-const connection = require('../../services/mysql');
+const pool = require('../../services/mysql');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
@@ -33,7 +33,7 @@ const signupVerify = async (req, res, next) => {
     const hashedPasssword = await bcrypt.hash(valueInRedis.password, 10)
     const _id = uuidv4().replace(/-/g, "").substring(0, 24);
 
-    await connection.query("INSERT INTO users(_id,username,email,password) VALUES (?,?,?,?)",
+    await pool.query("INSERT INTO users(_id,username,email,password) VALUES (?,?,?,?)",
         [_id, email, email, hashedPasssword]);
     await redis.del(email);
     res.send({ code: 200, message: 'Xac thuc thanh cong' });
@@ -42,7 +42,7 @@ const signupVerify = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     const { email, password } = req.body;
-    const user = await connection.queryOne('SELECT * FROM users WHERE email=? LIMIT 1', [email]);
+    const [[user]] = await pool.query('SELECT * FROM users WHERE email=? LIMIT 1', [email]);
     if (!user) {
         res.send({ code: 1001, message: 'Sai email' });
         return;

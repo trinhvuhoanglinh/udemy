@@ -8,7 +8,6 @@ router.use(authMiddleware);
 router.get('/getPayment', getPayment);
 router.post('/deposit', deposit);
 router.post('/withdraw', withdraw);
-
 router.post('/deletePayment', deletePayment);
 
 
