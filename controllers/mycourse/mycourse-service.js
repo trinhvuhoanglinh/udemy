@@ -20,9 +20,18 @@ const createCourse = async (req, res, next) => {
 
 }
 
+const deleteCourse = async (req, res, next) => {
+    const course_id = req.body.courseid;
+    await pool.query("DELETE FROM courses WHERE _id = ?;", [course_id]);
+    res.send({ code: 200, messenge: 'Thanh cong' });
+    return;
+
+}
+
 
 module.exports = {
     getMyCourses,
     createCourse,
+    deleteCourse,
 
 }
